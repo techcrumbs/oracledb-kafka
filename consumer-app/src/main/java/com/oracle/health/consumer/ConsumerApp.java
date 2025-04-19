@@ -13,13 +13,16 @@ public class ConsumerApp {
 
     private static final String TOPIC = "TXEQ_TEST1";
 
+    private static final String CONSUMER_GROUP_PROP_KEY = "consumerGroup";
+
     public static void main(String[] args) {
 
         String ojdbcPropertiesFileDir = System.getProperty(Constants.OJDBC_PROPERTIES_FILE_DIR_PROP_KEY);
+        String consumerGroup = System.getProperty(CONSUMER_GROUP_PROP_KEY, "MY_CONSUMER_GROUP1");
 
         // Create the Consumer.
         Properties consumerProps = OKafkaProperties.getLocalConnectionProps(ojdbcPropertiesFileDir, Constants.ORACLE_DB_PORT);
-        consumerProps.put("group.id", "MY_CONSUMER_GROUP1");
+        consumerProps.put("group.id", consumerGroup);
         consumerProps.put("enable.auto.commit", "false");
         consumerProps.put("max.poll.records", 1);
         consumerProps.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");

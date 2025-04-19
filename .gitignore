@@ -1,1 +1,5 @@
 .idea/
+producer-app/target/*
+consumer-app/target/*
+messaging-common/target/*
+

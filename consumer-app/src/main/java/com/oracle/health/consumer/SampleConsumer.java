@@ -1,6 +1,7 @@
 package com.oracle.health.consumer;
 
 import org.apache.kafka.clients.consumer.Consumer;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 
 import java.time.Duration;
@@ -11,6 +12,8 @@ public class SampleConsumer<T> implements Runnable, AutoCloseable {
     private final Consumer<String, T> consumer;
     private final String topic;
     private final int expectedMessages;
+    private int processedRecordCount = 0;
+
 
     public SampleConsumer(Consumer<String, T> consumer, String topic, int expectedMessages) {
         this.consumer = consumer;
@@ -30,6 +33,8 @@ public class SampleConsumer<T> implements Runnable, AutoCloseable {
                 return;
             }
             processRecords(records);
+            processedRecordCount += 1;
+            System.out.println("Processed records count: " + processedRecordCount);
             // Commit records when done processing.
             consumer.commitSync();
         }
@@ -37,6 +42,13 @@ public class SampleConsumer<T> implements Runnable, AutoCloseable {
 
     private void processRecords(ConsumerRecords<String, T> records) {
         // Application implementation of record processing.
+        for (ConsumerRecord<String, T> record : records) {
+            System.out.println("key = " + record.key() + ", value = " + record.value());
+        }
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+        }
     }
 
     @Override
